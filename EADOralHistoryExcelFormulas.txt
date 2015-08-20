@@ -1,0 +1,35 @@
+Excel formulas and workflow developed by Jeremy Myntti (Jeremy.Myntti@utah.edu), revised by Anna Neatrour (Anna.Neatrour@utah.edu). 
+
+This file shows an example of the processing the Marriott Digital Library Services Group does with item-level EAD metadata for oral histories. 
+First, we extract the EAD metadata into a plain text tab delimited file with the following columns via XSLT using Oxygen. 
+Not all of the columns are present in every EAD file we process.
+
+Column Name
+A 		Box
+B 		Folder
+C 		Name
+D 		Abstract
+E 		Date
+
+We copy the extracted data into Excel and apply the following formulas and add additional columns to process metadata for additional fields:
+
+F - Extent, number of pages in an oral history from the abstract
+=SUBSTITUTE(TRIM(MID(D2,(FIND(" pages",D2)-3),100)),".",";")
+
+G - Creator Name - Extract personal name from column C and invert to LastName, FirstName initial format by splitting words on the last space. 
+
+=CONCATENATE(MID(C2,1+(FIND("+",SUBSTITUTE(C2," ","+",LEN(C2)-LEN(SUBSTITUTE(C2," ",""))))),100),", ",LEFT(C2,(FIND("+",SUBSTITUTE(C2," ","+",LEN(C2)-LEN(SUBSTITUTE(C2," ","")))))-1),"")
+
+H - Birth Date - extract from abstract
+
+=SUBSTITUTE(TRIM(MID(D2,(FIND("b. ",D2)+2),5)),".",";")
+
+I - Creator Name and birth date - we will use this for local name authority purposes when we can't find a match for the name via Open Refine reconciliation. 
+
+=CONCATENATE(G2,", ",H2, "-")
+
+J - Subject with personal name, birth date and subheading interviews
+
+Anderson, Allen S., 1925- --Interviews
+
+When this process is complete, we load the information into our metadata editing tool (the SIMP tool), this process reduces time and errors introduced previously in transcribing or copying and pasting data from the EAD. 
